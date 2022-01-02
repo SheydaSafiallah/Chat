@@ -1,25 +1,21 @@
 import {io} from "socket.io-client";
+import BaseClient from "../common/base-client";
+import Protocol from "../common/protocol";
 
-class Client {
-    #protocol = null;
-    #client = null;
+class Client extends BaseClient {
+    #commandExecutor = null;
 
-    constructor(host, port, protocol) {
-        this.#protocol = protocol;
-
-        this.#client = io(`http://${host}:${port}`);
-        this.#client.on('connect', () => {
-            //TODO: handle client connection
-            console.log("Client Connected!")
+    constructor(host, port, commandExecutor, sessionId = null) {
+        super(io({transports: ['websocket'], auth: {sessionId}}))
+        this.#commandExecutor = commandExecutor
+        this.io.on('command', (commandString) => {
+            this.#onCommand(commandString)
         })
     }
 
-    sendCommand(commandName, options) {
-        const commandObject = {
-            commandName, ...options
-        };
-
-        this.#client.emit('command', this.#protocol.commandToString(commandObject));
+    #onCommand(commandString) {
+        const commandObject = Protocol.stringToCommand(commandString);
+        this.#commandExecutor.execute(commandObject)
     }
 }
 

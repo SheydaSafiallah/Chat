@@ -7,16 +7,17 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.1.1",
     "@rollup/plugin-run": "^2.1.0",
+    "better-sqlite3": "^7.4.6",
     "express": "^4.17.2",
     "jquery": "^3.6.0",
     "rollup": "^2.62.0",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-node-externals": "^3.1.2",
     "socket.io": "^4.4.0",
-    "socket.io-client": "^4.4.0"
+    "socket.io-client": "^4.4.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
-    "start-server": "rollup -w -c server.rollup.config.js",
-    "start-client": "rollup -w -c client.rollup.config.js"
+    "start": "rollup -w -c rollup.config.js"
   }
 }

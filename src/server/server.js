@@ -1,26 +1,25 @@
-import fs from "fs";
 import io from "socket.io";
 import express from 'express'
 import http from 'http'
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import {getDirName} from "./helper";
+import BaseClient from "../common/base-client";
+import Constants from "../common/constants";
+import Protocol from "../common/protocol";
+import {findUserBySessionId} from "./query";
 
 class Server {
-    #protocol = null;
     #service = null;
     #server = null;
     #io = null;
     #app = null;
 
-    constructor(port, protocol, service) {
-        this.#protocol = protocol
+    constructor(port, service) {
         this.#service = service;
         this.#app = express()
         this.#server = http.createServer(this.#app);
-        this.#io = new io.Server(this.#server);
+        this.#io = new io.Server(this.#server, {transports: ['websocket']});
 
-        const __dirname = dirname(fileURLToPath(import.meta.url));
-        this.#app.use(express.static(__dirname + '/static'))
+        this.#app.use(express.static(getDirName() + '/static'))
         this.#io.on("connection", (socket) => {
             this.#onNewConnection(socket)
         });
@@ -29,32 +28,24 @@ class Server {
     }
 
     #onNewConnection(socket) {
-        socket.on('message', (data) => {
-            this.#onMessage(data)
-        })
-        socket.on('file', (buffer) => {
-            this.#onFile(buffer)
-        })
+        const client = new BaseClient(socket);
+        const user = findUserBySessionId(socket.handshake.auth.sessionId)
+
         socket.on('command', (commandString) => {
-            this.#onCommand(commandString)
+            this.#onCommand(commandString, client,user)
         })
     }
 
-    #onMessage(data) {
-        console.log("Message: " + data)
-    }
-
-    #onFile(buffer) {
-        fs.writeFile('/tmp/sheyda', buffer, (error) => {
-            if (error) {
-                console.error(error)
+    #onCommand(commandString, client,user) {
+        try {
+            const commandObject = Protocol.stringToCommand(commandString);
+            const result = this.#service.executeCommand(commandObject,user);
+            if (result) {
+                client.sendCommand(result.commandName, result.options)
             }
-        })
-    }
-
-    #onCommand(commandString) {
-        const commandObject = this.#protocol.stringToCommand(commandString);
-        this.#service.executeCommand(commandObject)
+        } catch (error) {
+            client.sendCommand(Constants.Commands.Error, {reason: error.message})
+        }
     }
 }
 
