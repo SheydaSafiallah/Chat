@@ -7,12 +7,16 @@ class BaseClient {
         this.io = io;
     }
 
-    sendCommand(commandName, options) {
+    static sendSocketCommand(io, commandName, options) {
         const commandObject = {
             commandName, ...options
         };
 
-        this.io.emit('command', Protocol.commandToString(commandObject));
+        io.emit('command', Protocol.commandToString(commandObject));
+    }
+
+    sendCommand(commandName, options) {
+        BaseClient.sendSocketCommand(this.io, commandName, options)
     }
 }
 

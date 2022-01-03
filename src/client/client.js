@@ -14,8 +14,12 @@ class Client extends BaseClient {
     }
 
     #onCommand(commandString) {
-        const commandObject = Protocol.stringToCommand(commandString);
-        this.#commandExecutor.execute(commandObject)
+        try {
+            const commandObject = Protocol.stringToCommand(commandString);
+            this.#commandExecutor.execute(commandObject)
+        } catch (error) {
+            alert(error.message)
+        }
     }
 }
 

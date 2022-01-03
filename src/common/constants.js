@@ -8,10 +8,13 @@ const Constants = {
         Error: 'ERROR',
         UserAccepted: 'User Accepted',
         UserNotAccepted: 'User Not Accepted',
-        PM:'PM'
+        PM: 'PM',
+        Users: 'Users',
+        UsersList: 'USERS_LIST'
     },
     LocalStorage: {
-        Session: 'session'
+        Session: 'session',
+        UserID: 'userId'
     }
 }
 

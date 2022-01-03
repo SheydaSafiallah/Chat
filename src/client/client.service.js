@@ -22,6 +22,10 @@ class ClientService {
     sendPrivateMessage(message, to) {
         this.#sendCommand(Constants.Commands.PM, {message_len: message.length, to, message_body: message})
     }
+
+    getUsers(group) {
+        this.#sendCommand(Constants.Commands.Users, {group})
+    }
 }
 
 export default ClientService;

@@ -31,9 +31,9 @@ class CommandExecutor {
         alert("not: " + reason)
     }
 
-    #connected = ({sid})=>{
-        localStorage.setItem(Constants.LocalStorage.Session,sid);
-        window.location.href='/chat'
+    #connected = ({sid}) => {
+        localStorage.setItem(Constants.LocalStorage.Session, sid);
+        window.location.href = '/chat'
     }
 }
 
@@ -42,7 +42,9 @@ const login = () => {
     const clientService = new ClientService(client);
 
     $("#loginBtn").click(() => {
-        clientService.connectUser($('#login input[name="id"]').val(), $('#login input[name="password"]').val());
+        const userId = $('#login input[name="id"]').val()
+        localStorage.setItem(Constants.LocalStorage.UserID, userId);
+        clientService.connectUser(userId, $('#login input[name="password"]').val());
     })
 
     $("#signUpBtn").click(() => {

@@ -18,7 +18,6 @@ class Server {
         this.#app = express()
         this.#server = http.createServer(this.#app);
         this.#io = new io.Server(this.#server, {transports: ['websocket']});
-
         this.#app.use(express.static(getDirName() + '/static'))
         this.#io.on("connection", (socket) => {
             this.#onNewConnection(socket)
@@ -29,19 +28,32 @@ class Server {
 
     #onNewConnection(socket) {
         const client = new BaseClient(socket);
-        const user = findUserBySessionId(socket.handshake.auth.sessionId)
+        const user = socket.handshake?.auth?.sessionId ? findUserBySessionId(socket.handshake.auth.sessionId) : null
+
+        if (user) {
+            socket.join(user.ID);
+        }
+
+        //TODO: join the socket to the other groups which is participant of.
+        //TODO: group id and user id both should be unique.
 
         socket.on('command', (commandString) => {
-            this.#onCommand(commandString, client,user)
+            this.#onCommand(commandString, client, user)
         })
     }
 
-    #onCommand(commandString, client,user) {
+    #onCommand(commandString, client, user) {
         try {
             const commandObject = Protocol.stringToCommand(commandString);
-            const result = this.#service.executeCommand(commandObject,user);
+            const result = this.#service.executeCommand(commandObject, user);
             if (result) {
-                client.sendCommand(result.commandName, result.options)
+                if (result.rooms) {
+                    result.rooms.forEach(room => {
+                        BaseClient.sendSocketCommand(this.#io.to(room), result.commandName, result.options);
+                    })
+                } else {
+                    client.sendCommand(result.commandName, result.options)
+                }
             }
         } catch (error) {
             client.sendCommand(Constants.Commands.Error, {reason: error.message})

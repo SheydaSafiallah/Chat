@@ -137,24 +137,7 @@ body {
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 600;
 }
-.container .left .people .person .time {
-    font-size: 14px;
-    position: absolute;
-    top: 16px;
-    right: 10%;
-    padding: 0 0 5px 5px;
-    color: var(--grey);
-    background-color: var(--white);
-}
-.container .left .people .person .preview {
-    font-size: 14px;
-    display: inline-block;
-    overflow: hidden !important;
-    width: 70%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    color: var(--grey);
-}
+
 .container .left .people .person.active, .container .left .people .person:hover {
     margin-top: -1px;
     margin-left: -1px;
@@ -218,7 +201,6 @@ body {
 }
 .container .right .chat {
     position: relative;
-    display: none;
     overflow: hidden;
     padding: 0 35px 92px;
     border-width: 1px 1px 1px 0;
