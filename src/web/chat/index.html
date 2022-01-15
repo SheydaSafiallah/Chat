@@ -9,32 +9,88 @@
 <body>
 <div class="overlay">
     <div class="container">
+
+
         <div class="left">
             <div class="top">
-                <input type="text" placeholder="Search">
+                <label>
+                    <input type="text" placeholder="Search">
+                </label>
+                <button type="button" class="search">Go</button>
             </div>
             <ul class="people">
             </ul>
+
         </div>
+
+
         <div class="right">
             <div class="top"><span>To: <span class="name">john doe</span></span></div>
 
             <div class="chat">
                 <div class="conversation-start">
-                    <span>Today, 5:38 PM</span>
+<!--                    <span>Today, 5:38 PM</span>-->
                 </div>
             </div>
 
-
+<!--            <div class="write">-->
+<!--                <input id="messageInput" type="text" placeholder="Message">-->
+<!--                <button id="sendMessage">Send</button>-->
+<!--            </div>-->
 
             <div class="write">
-                <input id="messageInput" type="text" placeholder="Message">
+                <label>
+                    <textarea id="messageInput" class="messageInput" placeholder="EnterYourMessage"></textarea>
+                </label>
                 <button id="sendMessage">Send</button>
+
+            </div>
+
+
+        </div>
+
+        <div class="group">
+            <div class="top">
+                <span class="title">Group Management</span>
+            </div>
+            <div class="ID">
+                <label>
+                    <input type="text" placeholder="ID">
+                </label>
+            </div>
+            <div class="Name">
+                <label>
+                    <input type="text" placeholder="Name">
+                </label>
+            </div>
+
+            <div class="participants">
+                <input type="checkbox" class="participant" name="username" value="username">username<br>
+                <input type="checkbox" class="participant" name="username2" value="username">username<br>
+                <input type="checkbox" class="participant" name="username3" value="username">username<br>
+                <input type="checkbox" class="participant" name="username" value="username">username<br>
+                <input type="checkbox" class="participant" name="username2" value="username">username<br>
+                <input type="checkbox" class="participant" name="username3" value="username">username<br>
+                <input type="checkbox" class="participant" name="username" value="username">username<br>
+                <input type="checkbox" class="participant" name="username2" value="username">username<br>
+                <input type="checkbox" class="participant" name="username3" value="username">username<br>
+                <input type="checkbox" class="participant" name="username" value="username">username<br>
+                <input type="checkbox" class="participant" name="username2" value="username">username<br>
+                <input type="checkbox" class="participant" name="username3" value="username">username<br>
+                <input type="checkbox" class="participant" name="username" value="username">username<br>
+                <input type="checkbox" class="participant" name="username2" value="username">username<br>
+                <input type="checkbox" class="participant" name="username3" value="username">username<br>
+            </div>
+            <div class="btn">
+                <button type="button" class="add">Add</button>
+                <button type="button" class="leave">Leave</button>
             </div>
 
 
+        </div>
 
-            </div>
+
+
     </div>
 </div>
 

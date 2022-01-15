@@ -27,6 +27,18 @@ export const getGroupParticipants = (groupId) => {
     )
 }
 
+export const getGroupID = () =>{
+    return db.prepare('select GroupID from GROUP')
+}
+
+export const GetGroupsThatUserIsMember=(userName) =>{
+    return db.prepare('select GroupID from GroupParticipant where Participant =?').all(userName).map(
+        ({GroupID})=>GroupID
+    )
+}
+
+
+
 export const allUsers = ()=>{
     return db.prepare('select ID from Authentication').all().map(
         ({ID})=>ID

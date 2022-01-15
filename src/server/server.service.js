@@ -1,6 +1,7 @@
 import Constants from "../common/constants";
 import {allUsers, createSessionId, createUser, findUser, getGroupParticipants, savePrivateMessage} from "./query";
 import {v4 as uuid} from 'uuid'
+import bcrypt from "bcrypt";
 
 class ServerService {
     executeCommand({commandName, ...options}, user) {
@@ -18,6 +19,13 @@ class ServerService {
         }
     }
 
+/////hashpass
+    #hashPassword = (pass) =>{
+        const saltRounds = 10;
+        return bcrypt.hashSync(pass, saltRounds)
+    }
+
+
     #createUser = ({user, pass, id}) => {
         if (findUser(id)) {
             return {
@@ -28,7 +36,7 @@ class ServerService {
             }
         }
 
-        createUser(id, user, pass);
+        createUser(id, user, this.#hashPassword(pass));
 
         return {
             commandName: Constants.Commands.UserAccepted,
@@ -37,7 +45,7 @@ class ServerService {
             }
         }
     }
-
+////use hash pass
     #connectUser = ({user, pass}) => {
         const foundUser = findUser(user);
 
@@ -45,7 +53,7 @@ class ServerService {
             throw new Error("User was not found.")
         }
 
-        if (foundUser.Password !== pass) {
+        if (!bcrypt.compareSync(pass, foundUser.Password)) {
             throw new Error("Password is incorrect.")
         }
 

@@ -14,7 +14,6 @@ class ClientService {
     createUser(id, user, pass) {
         this.#sendCommand(Constants.Commands.Make, {user, pass, id})
     }
-
     connectUser(user, pass) {
         this.#sendCommand(Constants.Commands.Connect, {user, pass})
     }

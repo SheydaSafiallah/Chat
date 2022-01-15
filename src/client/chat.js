@@ -15,6 +15,8 @@ class CommandExecutor {
                 return this.#usersList(options);
             case Constants.Commands.PM:
                 return this.#privateMessage(options)
+            case Constants.Commands.GM(options):
+                return this.#GroupMessage();
             default:
                 throw new Error("Unknown Command")
         }
@@ -35,6 +37,8 @@ class CommandExecutor {
                     $('.active').removeClass('active');
                     userElement.addClass('active');
                     selectedChat = user;
+                //    name john doe
+                //     $('.toName').text(user)
                 }
             )
             $(".people").append(
@@ -42,6 +46,13 @@ class CommandExecutor {
             )
         })
     }
+    ////imp group
+    #GroupMessage(){
+        console.log("hi")
+    }
+
+
+
     #privateMessage = ({from, to, message_len, message_body}) => {
         if (message_body.length !== +message_len) {
             throw new Error("Message is corrupted.")

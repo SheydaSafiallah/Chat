@@ -9,6 +9,7 @@ const Constants = {
         UserAccepted: 'User Accepted',
         UserNotAccepted: 'User Not Accepted',
         PM: 'PM',
+        GM: 'GM',
         Users: 'Users',
         UsersList: 'USERS_LIST'
     },

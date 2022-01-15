@@ -5,7 +5,7 @@ import {getDirName} from "./helper";
 import BaseClient from "../common/base-client";
 import Constants from "../common/constants";
 import Protocol from "../common/protocol";
-import {findUserBySessionId} from "./query";
+import {findUserBySessionId, GetGroupsThatUserIsMember} from "./query";
 
 class Server {
     #service = null;
@@ -32,9 +32,19 @@ class Server {
 
         if (user) {
             socket.join(user.ID);
+
+        }
+        // TODO: join the socket to the other groups which is participant of.
+        if (user){
+            const groups = GetGroupsThatUserIsMember(user.ID);
+            groups.forEach(element => {
+                socket.join(element)
+                console.log(element)
+            })
+
         }
 
-        //TODO: join the socket to the other groups which is participant of.
+
         //TODO: group id and user id both should be unique.
 
         socket.on('command', (commandString) => {
