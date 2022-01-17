@@ -45,6 +45,11 @@ class ClientService {
         this.#sendCommand(Constants.Commands.Group, {user, gname})
     }
 
+    //imp3
+    leftGroup(user, gname){
+        this.#sendCommand(Constants.Commands.End , {user , gname})
+    }
+
 }
 
 export default ClientService;

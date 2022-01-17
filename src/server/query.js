@@ -53,6 +53,13 @@ export const addGroupParticipant = (groupID, participant) => {
     return db.prepare('insert into GroupParticipant (GroupID,Participant) values (?,?)').run(groupID, participant)
 }
 
+// imp3
+export const removeGroupParticipant = (groupID, participant) => {
+    return db.prepare('delete from GroupParticipant where Participant = ?').run(participant)
+    // return db.prepare()
+}
+
+
 
 export const findGroup = (GroupID) => {
     return db.prepare('select * from "Group" where GroupID = ?').get(GroupID)

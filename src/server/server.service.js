@@ -8,7 +8,7 @@ import {
     findGroup,
     findUser,
     getGroupParticipants,
-    getGroupsThatUserIsMember,
+    getGroupsThatUserIsMember, removeGroupParticipant,
     saveGroupMessage,
     savePrivateMessage
 } from "./query";
@@ -34,6 +34,8 @@ class ServerService {
                 return this.#userGroupList(options)
             case Constants.Commands.Group:
                 return this.#makeGroup(options)
+            case Constants.Commands.End:
+                return this.#leftGroup(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -71,6 +73,24 @@ class ServerService {
             },
             join: gname
         }
+
+    }
+
+    ///imp3
+    #leftGroup = ({user, gname}) => {
+        if (findGroup(gname)){
+            removeGroupParticipant(gname , user)
+        }
+
+        return {
+            rooms: [gname],
+            commandName: Constants.Commands.UserLeave,
+            options: {
+                user,
+                group: gname
+            }
+        }
+
 
     }
 

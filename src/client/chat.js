@@ -31,6 +31,8 @@ class CommandExecutor {
                 return this.#groupList(options);
             case Constants.Commands.UserJoint:
                 return this.#userJoint(options);
+            case Constants.Commands.UserLeave:
+                return this.#userLeft(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -70,6 +72,17 @@ class CommandExecutor {
             const chatElement = $('<div class="bubble"></div>')
             chatElement.text(user === currentUser ?  'Welcome' : user+' Joint!')
             $('.chat').append(chatElement)
+        }
+    }
+
+///imp3
+    #userLeft= ({user , group}) => {
+        // alert("left")
+        if (selectedChat === group){
+            const chatElement = $('<div class="bubble"></div>')
+            chatElement.text(user + 'Left')
+            $('.chat').append(chatElement)
+
         }
     }
 
@@ -188,6 +201,16 @@ const chat = () => {
             const groupName = $('#newGroupName').val()
             clientService.makeGroup(currentUser ,groupName);
         }
+    )
+
+    $('#leavebtn').click(
+        ()=>
+        {
+            const leftGroupName = $('#newGroupName').val()
+            clientService.leftGroup(currentUser, leftGroupName)
+        }
+
+
     )
 
     clientService.getUsers();
