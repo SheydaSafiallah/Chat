@@ -18,6 +18,8 @@ class CommandExecutor {
                 return this.#privateMessage(options)
             case Constants.Commands.GM:
                 return this.#groupMessage(options);
+            case Constants.Commands.GroupUsersList:
+                return this.#groupUsersList(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -46,6 +48,7 @@ class CommandExecutor {
             )
         })
     }
+
     ////imp group -> make bubble of group msg
     #groupMessage = ({from, to, message_len, message_body}) => {
         if (message_body.length !== +message_len) {
@@ -57,6 +60,28 @@ class CommandExecutor {
             chatElement.text(from+": "+message_body)
             $('.chat').append(chatElement)
         }
+    }
+
+
+    ///imp group users list
+    #groupUsersList = ({users: usersString}) => {
+        const groupUsers = usersString.split("|");
+        groupUsers.forEach((user) => {
+            const groupUserElement = $('<li class="participant">\n' +
+                '<span class="Participantname">' + user + '</span>\n' +
+                '</li>')
+            groupUserElement.click(
+                () => {
+                    $('.active').removeClass('active');
+                    groupUserElement.addClass('active');
+                    selectedChat = user;
+                    $('#toName').text(user)
+                }
+            )
+            $(".participants").append(
+                groupUserElement
+            )
+        })
     }
 
 

@@ -54,6 +54,11 @@ export const setGroupParticipant = (groupID, participant) => {
 }
 
 
+export const findGroup = (GroupID) => {
+    return db.prepare('select GroupID from Group where GroupID=?').get(GroupID)
+}
+
+
 export const allUsers = ()=>{
     return db.prepare('select ID from Authentication').all().map(
         ({ID})=>ID
