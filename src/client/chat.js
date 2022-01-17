@@ -7,7 +7,14 @@ let selectedChat = null;
 let currentUser = localStorage.getItem(Constants.LocalStorage.UserID)
 let isGroup = false;
 
+
 class CommandExecutor {
+    #clientService = null;
+
+    constructor(clientService) {
+        this.#clientService = clientService;
+    }
+
     execute({commandName, ...options}) {
         switch (commandName) {
             case Constants.Commands.Error:
@@ -20,6 +27,10 @@ class CommandExecutor {
                 return this.#groupMessage(options);
             case Constants.Commands.GroupUsersList:
                 return this.#groupUsersList(options);
+            case Constants.Commands.GroupList:
+                return this.#groupList(options);
+            case Constants.Commands.Group:
+                return
             default:
                 throw new Error("Unknown Command")
         }
@@ -28,6 +39,35 @@ class CommandExecutor {
     #error = ({reason}) => {
         alert(reason)
     }
+    //imp
+
+
+
+
+
+    //imp
+    #groupList = ({groups: groupsString}) => {
+        const groups = groupsString.split("|");
+        groups.forEach((group) => {
+            const groupElement = $('<li class="group">\n' +
+                '<span class="groupName">' + group + '</span>\n' +
+                '</li>')
+            groupElement.click(
+                () => {
+                    $('.active').removeClass('active');
+                    groupElement.addClass('active');
+                    selectedChat = group;
+                    isGroup = true;
+                    $('#toName').text(group)
+                    this.#clientService.getGroupUsers(group);
+                }
+            )
+            $(".groups").append(
+                groupElement
+            )
+        })
+    }
+
 
     #usersList = ({users: usersString}) => {
         const users = usersString.split("|");
@@ -40,6 +80,7 @@ class CommandExecutor {
                     $('.active').removeClass('active');
                     userElement.addClass('active');
                     selectedChat = user;
+                    isGroup = false;
                     $('#toName').text(user)
                 }
             )
@@ -54,36 +95,28 @@ class CommandExecutor {
         if (message_body.length !== +message_len) {
             throw new Error("Message is corrupted.")
         }
-        if (currentUser === from && selectedChat === to || selectedChat === from && currentUser === to) {
+        if (selectedChat === to) {
             const chatElement = $('<div class="bubble"></div>')
             chatElement.addClass(from === currentUser ? 'me' : 'you')
-            chatElement.text(from+": "+message_body)
+            chatElement.text(from + ": " + message_body)
             $('.chat').append(chatElement)
         }
     }
 
 
     ///imp group users list
-    #groupUsersList = ({users: usersString}) => {
-        const groupUsers = usersString.split("|");
-        groupUsers.forEach((user) => {
+    #groupUsersList = ({participants: participantsString}) => {
+        const groupUsers = participantsString.split("|");
+        $(".participants").empty();
+            groupUsers.forEach((user) => {
             const groupUserElement = $('<li class="participant">\n' +
                 '<span class="Participantname">' + user + '</span>\n' +
                 '</li>')
-            groupUserElement.click(
-                () => {
-                    $('.active').removeClass('active');
-                    groupUserElement.addClass('active');
-                    selectedChat = user;
-                    $('#toName').text(user)
-                }
-            )
             $(".participants").append(
                 groupUserElement
             )
         })
     }
-
 
 
     #privateMessage = ({from, to, message_len, message_body}) => {
@@ -105,21 +138,22 @@ const chat = () => {
         return;
     }
     const sessionId = localStorage.getItem(Constants.LocalStorage.Session);
-    const client = new Client(Constants.hostname, Constants.port, new CommandExecutor(), sessionId);
+    const client = new Client(Constants.hostname, Constants.port, sessionId);
     const clientService = new ClientService(client);
+    client.setCommandExecutor(new CommandExecutor(clientService))
 
     $('#sendMessage').click(
         () => {
             if (isGroup) {
                 clientService.sendGroupMessage($('#messageInput').val(), selectedChat)
-            }
-            else {
+            } else {
                 clientService.sendPrivateMessage($('#messageInput').val(), selectedChat)
             }
         }
     )
 
     clientService.getUsers();
+    clientService.getGroups();
 }
 
 export default chat

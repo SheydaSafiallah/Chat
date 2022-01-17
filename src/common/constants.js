@@ -13,7 +13,9 @@ const Constants = {
         Users: 'Users',
         UsersList: 'USERS_LIST',
         GroupUsersList: 'GROUP_USERS_LIST',
+        GroupList: 'Group_List',
         Group: 'Group'
+
     },
     LocalStorage: {
         Session: 'session',

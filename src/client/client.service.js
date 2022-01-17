@@ -25,9 +25,19 @@ class ClientService {
     getUsers(group) {
         this.#sendCommand(Constants.Commands.Users, {group})
     }
+    ///imp
+    getGroupUsers(group) {
+        this.#sendCommand(Constants.Commands.GroupUsersList, {group})
+    }
+
+
     // message and id of gp send to server
     sendGroupMessage(message, to){
         this.#sendCommand(Constants.Commands.GM, {message_len:message.length , to, message_body: message})
+    }
+    //
+    getGroups(){
+        this.#sendCommand(Constants.Commands.GroupList,{} )
     }
 
 }

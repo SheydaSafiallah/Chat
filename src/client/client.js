@@ -5,12 +5,15 @@ import Protocol from "../common/protocol";
 class Client extends BaseClient {
     #commandExecutor = null;
 
-    constructor(host, port, commandExecutor, sessionId = null) {
+    constructor(host, port, sessionId = null) {
         super(io({transports: ['websocket'], auth: {sessionId}}))
-        this.#commandExecutor = commandExecutor
         this.io.on('command', (commandString) => {
             this.#onCommand(commandString)
         })
+    }
+
+    setCommandExecutor(commandExecutor){
+        this.#commandExecutor = commandExecutor
     }
 
     #onCommand(commandString) {

@@ -4,7 +4,7 @@ import {
     createSessionId,
     createUser,
     findUser,
-    getGroupParticipants,
+    getGroupParticipants, getGroupsThatUserIsMember,
     saveGroupMessage,
     savePrivateMessage
 } from "./query";
@@ -24,6 +24,10 @@ class ServerService {
                 return this.#sendGroupMessage(options, user);
             case Constants.Commands.Users:
                 return this.#sendUsers(options, user)
+            case  Constants.Commands.GroupList:
+                return this.#groupList(user);
+            case Constants.Commands.GroupUsersList:
+                return this.#userGroupList(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -33,6 +37,29 @@ class ServerService {
         const saltRounds = 10;
         return bcrypt.hashSync(pass, saltRounds)
     }
+
+
+    #userGroupList = ({group}) => {
+        return{
+            commandName: Constants.Commands.GroupUsersList,
+            options: {
+                participants: getGroupParticipants(group).join("|")
+            }
+        }
+    }
+
+
+
+    ///imp
+    #groupList = (user) => {
+        return {
+            commandName: Constants.Commands.GroupList,
+            options:{
+                groups: getGroupsThatUserIsMember(user.ID).join("|")
+            }
+
+        }
+}
 
 
     #createUser = ({user, pass, id}) => {
@@ -106,7 +133,7 @@ class ServerService {
         saveGroupMessage(user.ID, to, message_body, Math.floor(Date.now() / 1000));
         return {
             //group participants
-            rooms: [to,user.ID],
+            rooms: [to],
             commandName: Constants.Commands.GM,
             options: {
                 from: user.ID,
