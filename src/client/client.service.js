@@ -25,6 +25,11 @@ class ClientService {
     getUsers(group) {
         this.#sendCommand(Constants.Commands.Users, {group})
     }
+    // message and id of gp send to server
+    sendGroupMessage(message, to){
+        this.#sendCommand(Constants.Commands.GM, {message_len:message.length , to, message_body: message})
+    }
+
 }
 
 export default ClientService;

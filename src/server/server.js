@@ -5,7 +5,7 @@ import {getDirName} from "./helper";
 import BaseClient from "../common/base-client";
 import Constants from "../common/constants";
 import Protocol from "../common/protocol";
-import {findUserBySessionId, GetGroupsThatUserIsMember} from "./query";
+import {findUserBySessionId, getGroupsThatUserIsMember} from "./query";
 
 class Server {
     #service = null;
@@ -36,7 +36,7 @@ class Server {
         }
         // TODO: join the socket to the other groups which is participant of.
         if (user){
-            const groups = GetGroupsThatUserIsMember(user.ID);
+            const groups = getGroupsThatUserIsMember(user.ID);
             groups.forEach(element => {
                 socket.join(element)
                 console.log(element)

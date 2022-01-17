@@ -21,6 +21,12 @@ export const savePrivateMessage = (senderId, receiverId, message, time) => {
     return db.prepare('insert into PrivateChat (SenderID,ReceiverID,Message,Time) values (?,?,?,?)').run(senderId, receiverId, message, time)
 }
 
+
+export const saveGroupMessage = (senderId, receiverId, message, time) => {
+    return db.prepare('insert into GroupMessage (SenderID,GroupID,Message,Time) values (?,?,?,?)').run(senderId, receiverId, message, time)
+}
+
+
 export const getGroupParticipants = (groupId) => {
     return db.prepare('select Participant from GroupParticipant where GroupID=?').all(groupId).map(
         ({Participant})=>Participant
@@ -31,12 +37,21 @@ export const getGroupID = () =>{
     return db.prepare('select GroupID from GROUP')
 }
 
-export const GetGroupsThatUserIsMember=(userName) =>{
+export const getGroupsThatUserIsMember=(userName) =>{
     return db.prepare('select GroupID from GroupParticipant where Participant =?').all(userName).map(
         ({GroupID})=>GroupID
     )
 }
 
+
+export const createGroup = (groupID, groupName) => {
+    return db.prepare('insert into Group (GroupID,GroupName) values (?,?)').run(groupID, groupName)
+}
+
+
+export const setGroupParticipant = (groupID, participant) => {
+    return db.prepare('insert into GroupParticipant (GroupID,Participant) values (?,?)').run(groupID, participant)
+}
 
 
 export const allUsers = ()=>{

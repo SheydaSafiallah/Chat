@@ -5,6 +5,7 @@ import ClientService from "./client.service";
 
 let selectedChat = null;
 let currentUser = localStorage.getItem(Constants.LocalStorage.UserID)
+let isGroup = false;
 
 class CommandExecutor {
     execute({commandName, ...options}) {
@@ -16,7 +17,7 @@ class CommandExecutor {
             case Constants.Commands.PM:
                 return this.#privateMessage(options)
             case Constants.Commands.GM:
-                return this.#GroupMessage(options);
+                return this.#groupMessage(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -45,9 +46,17 @@ class CommandExecutor {
             )
         })
     }
-    ////imp group
-    #GroupMessage(){
-        console.log("hi")
+    ////imp group -> make bubble of group msg
+    #groupMessage = ({from, to, message_len, message_body}) => {
+        if (message_body.length !== +message_len) {
+            throw new Error("Message is corrupted.")
+        }
+        if (currentUser === from && selectedChat === to || selectedChat === from && currentUser === to) {
+            const chatElement = $('<div class="bubble"></div>')
+            chatElement.addClass(from === currentUser ? 'me' : 'you')
+            chatElement.text(from+": "+message_body)
+            $('.chat').append(chatElement)
+        }
     }
 
 
@@ -76,7 +85,12 @@ const chat = () => {
 
     $('#sendMessage').click(
         () => {
-            clientService.sendPrivateMessage($('#messageInput').val(), selectedChat)
+            if (isGroup) {
+                clientService.sendGroupMessage($('#messageInput').val(), selectedChat)
+            }
+            else {
+                clientService.sendPrivateMessage($('#messageInput').val(), selectedChat)
+            }
         }
     )
 

@@ -1,5 +1,13 @@
 import Constants from "../common/constants";
-import {allUsers, createSessionId, createUser, findUser, getGroupParticipants, savePrivateMessage} from "./query";
+import {
+    allUsers,
+    createSessionId,
+    createUser,
+    findUser,
+    getGroupParticipants,
+    saveGroupMessage,
+    savePrivateMessage
+} from "./query";
 import {v4 as uuid} from 'uuid'
 import bcrypt from "bcrypt";
 
@@ -12,6 +20,8 @@ class ServerService {
                 return this.#connectUser(options);
             case Constants.Commands.PM:
                 return this.#sendPrivateMessage(options, user);
+            case Constants.Commands.GM:
+                return this.#sendGroupMessage(options, user);
             case Constants.Commands.Users:
                 return this.#sendUsers(options, user)
             default:
@@ -19,7 +29,6 @@ class ServerService {
         }
     }
 
-/////hashpass
     #hashPassword = (pass) =>{
         const saltRounds = 10;
         return bcrypt.hashSync(pass, saltRounds)
@@ -45,7 +54,7 @@ class ServerService {
             }
         }
     }
-////use hash pass
+
     #connectUser = ({user, pass}) => {
         const foundUser = findUser(user);
 
@@ -88,6 +97,31 @@ class ServerService {
         }
     }
 
+    //imp group msg
+    #sendGroupMessage = ({message_len, to, message_body}, user) => {
+        if (message_body.length !== +message_len) {
+            throw new Error("Message is corrupted.")
+        }
+
+        saveGroupMessage(user.ID, to, message_body, Math.floor(Date.now() / 1000));
+        return {
+            //group participants
+            rooms: [to,user.ID],
+            commandName: Constants.Commands.GM,
+            options: {
+                from: user.ID,
+                to,
+                message_len,
+                message_body
+            },
+        }
+    }
+
+
+
+
+
+
     #sendUsers = ({group}, user) => {
         let participants = [];
 
@@ -98,6 +132,7 @@ class ServerService {
             }
         } else {
             //TODO: just return those users who you have a private chat
+            //we need all user
             participants = allUsers()
         }
 
@@ -108,6 +143,11 @@ class ServerService {
             }
         }
     }
+
+
+
+
+
 }
 
 export default ServerService;
