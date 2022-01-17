@@ -14,8 +14,10 @@ const Constants = {
         UsersList: 'USERS_LIST',
         GroupUsersList: 'GROUP_USERS_LIST',
         GroupList: 'Group_List',
-        Group: 'Group'
-
+        Group: 'Group', //make or join
+        End: 'End', //leave
+        UserJoint: 'UserJoint',
+        UserLeave: 'UserLeave'
     },
     LocalStorage: {
         Session: 'session',

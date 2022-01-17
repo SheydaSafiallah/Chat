@@ -57,6 +57,10 @@ class Server {
             const commandObject = Protocol.stringToCommand(commandString);
             const result = this.#service.executeCommand(commandObject, user);
             if (result) {
+                if (result.join){
+                    client.io.join(result.join)
+                }
+
                 if (result.rooms) {
                     result.rooms.forEach(room => {
                         BaseClient.sendSocketCommand(this.#io.to(room), result.commandName, result.options);
@@ -64,6 +68,7 @@ class Server {
                 } else {
                     client.sendCommand(result.commandName, result.options)
                 }
+
             }
         } catch (error) {
             client.sendCommand(Constants.Commands.Error, {reason: error.message})

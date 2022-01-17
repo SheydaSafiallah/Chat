@@ -29,8 +29,8 @@ class CommandExecutor {
                 return this.#groupUsersList(options);
             case Constants.Commands.GroupList:
                 return this.#groupList(options);
-            case Constants.Commands.Group:
-                return
+            case Constants.Commands.UserJoint:
+                return this.#userJoint(options);
             default:
                 throw new Error("Unknown Command")
         }
@@ -39,8 +39,39 @@ class CommandExecutor {
     #error = ({reason}) => {
         alert(reason)
     }
-    //imp
+    //imp2
+    #userJoint = ({user,group}) => {
+        if (user===currentUser){
+            const groupElement = $('<li class="group">\n' +
+                '<span class="groupName">' + group + '</span>\n' +
+                '</li>')
+            groupElement.click(
+                () => {
+                    $('.active').removeClass('active');
+                    groupElement.addClass('active');
+                    selectedChat = group;
+                    isGroup = true;
+                    $('#toName').text(group)
+                    this.#clientService.getGroupUsers(group);
+                }
+            )
+            $(".groups").append(
+                groupElement
+            )
 
+            $('.active').removeClass('active');
+            groupElement.addClass('active');
+            selectedChat = group;
+            isGroup = true;
+            $('#toName').text(group)
+        }
+
+        if (selectedChat===group){
+            const chatElement = $('<div class="bubble"></div>')
+            chatElement.text(user === currentUser ?  'Welcome' : user+' Joint!')
+            $('.chat').append(chatElement)
+        }
+    }
 
 
 
@@ -149,6 +180,13 @@ const chat = () => {
             } else {
                 clientService.sendPrivateMessage($('#messageInput').val(), selectedChat)
             }
+        }
+    )
+    $('#addbtn').click(
+        ()=>
+        {
+            const groupName = $('#newGroupName').val()
+            clientService.makeGroup(currentUser ,groupName);
         }
     )
 

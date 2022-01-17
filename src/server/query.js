@@ -45,17 +45,17 @@ export const getGroupsThatUserIsMember=(userName) =>{
 
 
 export const createGroup = (groupID, groupName) => {
-    return db.prepare('insert into Group (GroupID,GroupName) values (?,?)').run(groupID, groupName)
+    return db.prepare('insert into "Group" (GroupID,GroupName) values (?,?)').run(groupID, groupName)
 }
 
 
-export const setGroupParticipant = (groupID, participant) => {
+export const addGroupParticipant = (groupID, participant) => {
     return db.prepare('insert into GroupParticipant (GroupID,Participant) values (?,?)').run(groupID, participant)
 }
 
 
 export const findGroup = (GroupID) => {
-    return db.prepare('select GroupID from Group where GroupID=?').get(GroupID)
+    return db.prepare('select * from "Group" where GroupID = ?').get(GroupID)
 }
 
 

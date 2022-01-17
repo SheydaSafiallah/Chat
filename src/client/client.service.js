@@ -40,6 +40,11 @@ class ClientService {
         this.#sendCommand(Constants.Commands.GroupList,{} )
     }
 
+    //imp2
+    makeGroup(user, gname){
+        this.#sendCommand(Constants.Commands.Group, {user, gname})
+    }
+
 }
 
 export default ClientService;

@@ -38,9 +38,9 @@ class CommandExecutor {
 }
 
 const login = () => {
-    const client = new Client(Constants.hostname, Constants.port, new CommandExecutor());
+    const client = new Client(Constants.hostname, Constants.port);
     const clientService = new ClientService(client);
-
+    client.setCommandExecutor(new CommandExecutor())
     $("#loginBtn").click(() => {
         const userId = $('#login input[name="id"]').val()
         localStorage.setItem(Constants.LocalStorage.UserID, userId);

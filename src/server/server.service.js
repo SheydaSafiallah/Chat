@@ -1,10 +1,14 @@
 import Constants from "../common/constants";
 import {
+    addGroupParticipant,
     allUsers,
+    createGroup,
     createSessionId,
     createUser,
+    findGroup,
     findUser,
-    getGroupParticipants, getGroupsThatUserIsMember,
+    getGroupParticipants,
+    getGroupsThatUserIsMember,
     saveGroupMessage,
     savePrivateMessage
 } from "./query";
@@ -27,20 +31,22 @@ class ServerService {
             case  Constants.Commands.GroupList:
                 return this.#groupList(user);
             case Constants.Commands.GroupUsersList:
-                return this.#userGroupList(options);
+                return this.#userGroupList(options)
+            case Constants.Commands.Group:
+                return this.#makeGroup(options)
             default:
                 throw new Error("Unknown Command")
         }
     }
 
-    #hashPassword = (pass) =>{
+    #hashPassword = (pass) => {
         const saltRounds = 10;
         return bcrypt.hashSync(pass, saltRounds)
     }
 
 
     #userGroupList = ({group}) => {
-        return{
+        return {
             commandName: Constants.Commands.GroupUsersList,
             options: {
                 participants: getGroupParticipants(group).join("|")
@@ -48,18 +54,37 @@ class ServerService {
         }
     }
 
+    ////imp2
+    #makeGroup = ({user, gname}) => {
+        if (!findGroup(gname)) {
+            /// add this user to group participant
+            createGroup(gname, gname)
+        }
+        addGroupParticipant(gname, user)
+
+        return {
+            rooms: [gname],
+            commandName: Constants.Commands.UserJoint,
+            options: {
+                user,
+                group: gname
+            },
+            join: gname
+        }
+
+    }
 
 
     ///imp
     #groupList = (user) => {
         return {
             commandName: Constants.Commands.GroupList,
-            options:{
+            options: {
                 groups: getGroupsThatUserIsMember(user.ID).join("|")
             }
 
         }
-}
+    }
 
 
     #createUser = ({user, pass, id}) => {
@@ -113,7 +138,7 @@ class ServerService {
         savePrivateMessage(user.ID, to, message_body, Math.floor(Date.now() / 1000));
 
         return {
-            rooms: [to,user.ID],
+            rooms: [to, user.ID],
             commandName: Constants.Commands.PM,
             options: {
                 from: user.ID,
@@ -145,10 +170,6 @@ class ServerService {
     }
 
 
-
-
-
-
     #sendUsers = ({group}, user) => {
         let participants = [];
 
@@ -170,9 +191,6 @@ class ServerService {
             }
         }
     }
-
-
-
 
 
 }
