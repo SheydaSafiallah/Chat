@@ -23,12 +23,17 @@ class CommandExecutor {
         alert(reason)
     }
 
-    #userAccepted = ({id}) => {
-        alert("id: " + id)
+    #userAccepted = ({id , sid}) => {
+        alert("userAccepted, id: " + id)
+        localStorage.setItem(Constants.LocalStorage.UserID, id);
+        localStorage.setItem(Constants.LocalStorage.Session, sid);
+        window.location.href = '/chat'
+
+
     }
 
     #userNotAccepted = ({reason}) => {
-        alert("not: " + reason)
+        alert("userNotAccepted: " + reason)
     }
 
     #connected = ({sid}) => {

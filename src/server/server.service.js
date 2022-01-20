@@ -118,11 +118,13 @@ class ServerService {
         }
 
         createUser(id, user, this.#hashPassword(pass));
-
+        const sid = uuid();
+        createSessionId(sid, id)
         return {
             commandName: Constants.Commands.UserAccepted,
             options: {
-                id
+                id,
+                sid
             }
         }
     }

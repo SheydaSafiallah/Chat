@@ -58,6 +58,10 @@ export const removeGroupParticipant = (groupID, participant) => {
     return db.prepare('delete from GroupParticipant where Participant = ?').run(participant)
     // return db.prepare()
 }
+//
+// export const restoreMessage = () =>{
+//
+// }
 
 
 
